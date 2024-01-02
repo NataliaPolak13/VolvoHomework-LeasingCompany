@@ -15,7 +15,6 @@ namespace SecondVolvoHomework
 
             SaveToJsonFile(leasingCompany, jsonFilePath);
 
-
             static void SaveToJsonFile(VehicleFleet fleet, string filePath)
             {
                 string json = JsonConvert.SerializeObject(fleet, Formatting.Indented);

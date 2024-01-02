@@ -15,22 +15,15 @@ namespace SecondVolvoHomework
         {
             this.vehicleOperations = vehicleOperations;
         }
+        bool firstLine = false;
 
         public void RunMenu()
         {
             while (true)
             {
-                static double GetNumber()
-                {
-                    if (!double.TryParse(Console.ReadLine(), out double input))
-                       Console.WriteLine(new Exception("Your input is not a number. Try again. "));
-                       Console.WriteLine();
 
-                    return input;
-                }
-                bool firstLine = true;
 
-                if (!firstLine)
+                if (firstLine)
                 {
                     Console.WriteLine();
                 }
@@ -39,9 +32,10 @@ namespace SecondVolvoHomework
                 Console.WriteLine("2. Display vehicles exceeding operational tenure");
                 Console.WriteLine("3. Calculate total fleet value");
                 Console.WriteLine("4. Display vehicles requiring maintenance");
-                Console.WriteLine("5. Exit the program");
+                Console.WriteLine("5. Display vehicles sorted by comfort class");
+                Console.WriteLine("6. Exit the program");
 
-                firstLine = false;
+                firstLine = true;
 
                 Console.Write("Choose an option: ");
                 var option = GetNumber();
@@ -74,7 +68,7 @@ namespace SecondVolvoHomework
 
                     case 2:
                         Console.Write("Enter the model of the vehicle: ");
-                        string model = Console.ReadLine();
+                        string model = Console.ReadLine().Replace(" ", "");
                         var vehicleByTenure = vehicleOperations.ListVehiclesByModelAndTenure(model);
                         if (vehicleByTenure.Any()) 
                         { 
@@ -118,6 +112,28 @@ namespace SecondVolvoHomework
                         }
                         break;
                     case 5:
+                        Console.Write("Enter the brand of the vehicle: ");
+                        string brandByComfort = Console.ReadLine().Replace(" ", "");
+                        Console.Write("Enter the color of the vehicle: ");
+                        string colorByComfort = Console.ReadLine().Replace(" ", "");
+                        var vehicleByComfort = vehicleOperations.VehiclesSortedByComfortClass(brandByComfort, colorByComfort);
+                        if (vehicleByComfort.Any())
+                        {
+                            Console.WriteLine($"Our company has vehicles of {brandByComfort.ToLower()} with color {colorByComfort.ToLower()}: ");
+                            int i = 1;
+                            foreach (var car in vehicleByComfort)
+                            {
+                                Console.WriteLine($"{i}. {car.Brand} {car.Color} and it's comfort class: {vehicleOperations.CalculateComfortClass(car)}");
+                                i++;
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Our company does not have these vehicles.");
+                            Console.WriteLine();
+                        }
+                        break;
+                    case 6:
                         Environment.Exit(0);
                         break;
                     default:
@@ -125,6 +141,14 @@ namespace SecondVolvoHomework
                         break;
                 }
             }
+        }
+        static double GetNumber()
+        {
+            if (!double.TryParse(Console.ReadLine(), out double input))
+                Console.WriteLine(new Exception("Your input is not a number. Try again. "));
+            Console.WriteLine();
+
+            return input;
         }
     }
 }

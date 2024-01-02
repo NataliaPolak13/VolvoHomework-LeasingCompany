@@ -12,5 +12,8 @@ namespace SecondVolvoHomework
         List<Vehicle> ListVehiclesByModelAndTenure(string chosenModel);
         decimal CalculateTotalFleetValue();
         List<Vehicle> GetVehiclesRequiringMaintenance();
+        List<Vehicle> VehiclesSortedByComfortClass(string chosenBrand, string chosenColor);
+        string CalculateComfortClass(Vehicle vehicle);
+
     }
 }

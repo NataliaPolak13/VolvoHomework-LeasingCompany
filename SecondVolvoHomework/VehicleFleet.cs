@@ -64,18 +64,18 @@ namespace SecondVolvoHomework
 
             if (vehicle is PassengerVehicle passengerVehicle)
             {
-                decimal lossRate = 0.10m; 
+                decimal lossRate = 0.10m;
                 return vehicle.Price * (decimal)Math.Pow((double)(1 - lossRate), yearsOfExploitation);
             }
-            else 
+            else
             {
-                decimal lossRate = 0.07m; 
+                decimal lossRate = 0.07m;
                 return vehicle.Price * (decimal)Math.Pow((double)(1 - lossRate), yearsOfExploitation);
             }
 
         }
 
-    public List<Vehicle> GetVehiclesRequiringMaintenance()
+        public List<Vehicle> GetVehiclesRequiringMaintenance()
         {
             return vehicles.Where(car =>
             {
@@ -87,9 +87,54 @@ namespace SecondVolvoHomework
                 return false;
             }).ToList();
         }
-        public List<Vehicle> GetVehicles()
+        public string CalculateComfortClass(Vehicle vehicle)
         {
-            return vehicles;
+            int yearsOfExploitation = DateTime.Now.Year - vehicle.YearOfManufacture;
+
+            if (vehicle is PassengerVehicle passengerVehicle)
+            {
+
+                if (yearsOfExploitation <= 3 || passengerVehicle.TravelDistance < 10000)
+                {
+                    return "Premium";
+                }
+                else if (yearsOfExploitation <= 7 || passengerVehicle.TravelDistance < 50000)
+                {
+                    return "Standard";
+                }
+                else
+                {
+                    return "Economy";
+                }
+
+            }
+            else if (vehicle is CargoTransportVehicle cargoTransportVehicle)
+            {
+                if (yearsOfExploitation <= 3 || cargoTransportVehicle.TravelDistance < 20000)
+                {
+                    return "Premium";
+                }
+                else if (yearsOfExploitation <= 7 || (cargoTransportVehicle.TravelDistance >= 20000 && cargoTransportVehicle.TravelDistance < 70000))
+                {
+                    return "Standard";
+                }
+                else
+                {
+                    return "Economy";
+                }
+            }
+            else
+                return "Unknown";
+
+
+        }
+        public List<Vehicle> VehiclesSortedByComfortClass(string chosenBrand, string chosenColor)
+        {
+            return vehicles 
+                .Where(vehicle => vehicle.Brand.Equals(chosenBrand, StringComparison.OrdinalIgnoreCase) &&
+                 vehicle.Color.Equals(chosenColor, StringComparison.OrdinalIgnoreCase))
+                .OrderBy(vehicle => CalculateComfortClass(vehicle))
+                .ToList();
         }
     }
 
