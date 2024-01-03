@@ -8,12 +8,13 @@ namespace SecondVolvoHomework
         static void Main(string[] args)
         {
             string jsonFilePath = "FleetOfVehicleCompany.json";
-            VehicleFleet leasingCompany = LoadFromJsonFile(jsonFilePath);
+            VehicleFleet leasingCompany = LoadFromJsonFile(jsonFilePath);          
+
+            SaveToJsonFile(leasingCompany, jsonFilePath);
 
             Menu menu = new Menu(leasingCompany);
             menu.RunMenu();
 
-            SaveToJsonFile(leasingCompany, jsonFilePath);
 
             static void SaveToJsonFile(VehicleFleet fleet, string filePath)
             {
@@ -27,6 +28,7 @@ namespace SecondVolvoHomework
                 {
                     if (File.Exists(filePath))
                     {
+
                         string json = File.ReadAllText(filePath);
                         var fleet = JsonConvert.DeserializeObject<VehicleFleet>(json);
                         return fleet;

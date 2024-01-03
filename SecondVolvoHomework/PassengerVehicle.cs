@@ -9,16 +9,9 @@ namespace SecondVolvoHomework
 {
     public class PassengerVehicle : Vehicle
     {
-        [JsonProperty("travelDistance")]
         public int TravelDistance { get; set; }
-
-        [JsonProperty("lesseeRating")]
         public decimal LesseeRating { get; set; }
-
-        [JsonProperty("tripDuration")]
         public int TripDuration { get; set; }
-
-        [JsonProperty("modelCoefficient")]
         public decimal ModelCoefficient { get; set; }
 
 
