@@ -8,7 +8,9 @@ namespace SecondVolvoHomework
         static void Main(string[] args)
         {
             string jsonFilePath = "FleetOfVehicleCompany.json";
-            VehicleFleet leasingCompany = LoadFromJsonFile(jsonFilePath);          
+            VehicleFleet leasingCompany = LoadFromJsonFile(jsonFilePath);
+            SaveToJsonFile(leasingCompany, jsonFilePath);
+
 
             SaveToJsonFile(leasingCompany, jsonFilePath);
 
@@ -18,7 +20,12 @@ namespace SecondVolvoHomework
 
             static void SaveToJsonFile(VehicleFleet fleet, string filePath)
             {
-                string json = JsonConvert.SerializeObject(fleet, Formatting.Indented);
+                var settings = new JsonSerializerSettings
+                {
+                    TypeNameHandling = TypeNameHandling.All,
+                    Formatting = Formatting.Indented
+                };
+                string json = JsonConvert.SerializeObject(fleet, settings);
                 File.WriteAllText(filePath, json);
             }
 
@@ -28,9 +35,13 @@ namespace SecondVolvoHomework
                 {
                     if (File.Exists(filePath))
                     {
-
                         string json = File.ReadAllText(filePath);
-                        var fleet = JsonConvert.DeserializeObject<VehicleFleet>(json);
+                        var settings = new JsonSerializerSettings
+                        {
+                            TypeNameHandling = TypeNameHandling.All // Adds information about the type of object during serialization
+                        };
+
+                        var fleet = JsonConvert.DeserializeObject<VehicleFleet>(json, settings);
                         return fleet;
                     }
                     else
