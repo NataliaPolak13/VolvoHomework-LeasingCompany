@@ -14,6 +14,7 @@ namespace SecondVolvoHomework
         public Menu(IVehicleOperations vehicleOperations)
         {
             this.vehicleOperations = vehicleOperations;
+
         }
         bool firstLine = false;
 
@@ -45,6 +46,7 @@ namespace SecondVolvoHomework
                 switch(option)
                 {
                     case 1:
+                        vehicleOperations.BrandsOfVehicles();
                         Console.Write("Enter the brand of the vehicle: ");
                         string brand = Console.ReadLine();
                         var vehicleByBrand = vehicleOperations.VehiclesByBrand(brand);

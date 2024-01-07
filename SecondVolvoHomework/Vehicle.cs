@@ -9,13 +9,13 @@ namespace SecondVolvoHomework
 {
     public class Vehicle
     {
-        public string Color { get; set; }
-        public string Model { get; set; }
-        public string Brand { get; set; }
-        public int YearOfManufacture { get; set; }
-        public int Id { get; set; }
-        public string RegistrationNumber { get; set; }
-        public decimal Price { get; set; }
+        public string Color { get; private set; }
+        public string Model { get; private set; }
+        public string Brand { get; private set; }
+        public int YearOfManufacture { get; private set; }
+        public int Id { get; private set; }
+        public string RegistrationNumber { get; private set; }
+        public decimal Price { get; private set; }
 
         public Vehicle(string color, string model, string brand, int yearOfManufacture, int id, string registrationNumber, decimal price)
         {
@@ -26,7 +26,6 @@ namespace SecondVolvoHomework
             Id = id;
             RegistrationNumber = registrationNumber;
             Price = price;
-
         }
 
     }

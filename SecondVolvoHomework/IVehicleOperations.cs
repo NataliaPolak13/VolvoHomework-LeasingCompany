@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SecondVolvoHomework
 {
-    public interface IVehicleOperations
+    public interface IVehicleOperations 
     {
         List<Vehicle> VehiclesByBrand(string brand);
         List<Vehicle> ListVehiclesByModelAndTenure(string chosenModel);
@@ -14,6 +14,7 @@ namespace SecondVolvoHomework
         List<Vehicle> GetVehiclesRequiringMaintenance();
         List<Vehicle> VehiclesSortedByComfortClass(string chosenBrand, string chosenColor);
         string CalculateComfortClass(Vehicle vehicle);
+        List<string> BrandsOfVehicles();
 
     }
 }

@@ -28,6 +28,12 @@ namespace SecondVolvoHomework
         {
             return vehicles.Where(car => car.Brand.Equals(brand, StringComparison.OrdinalIgnoreCase)).ToList();
         }
+        public List<string> BrandsOfVehicles()
+        {
+            var distinctBrands = vehicles.Select(vehicle => vehicle.Brand).Distinct().ToList();
+            Console.WriteLine("Available vehicle brands: " + string.Join(", ", distinctBrands));
+            return distinctBrands;
+        }
 
         public List<Vehicle> ListVehiclesByModelAndTenure(string chosenModel)
         {

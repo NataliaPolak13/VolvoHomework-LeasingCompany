@@ -8,10 +8,8 @@ namespace SecondVolvoHomework
         static void Main(string[] args)
         {
             string jsonFilePath = "FleetOfVehicleCompany.json";
+
             VehicleFleet leasingCompany = LoadFromJsonFile(jsonFilePath);
-            SaveToJsonFile(leasingCompany, jsonFilePath);
-
-
             SaveToJsonFile(leasingCompany, jsonFilePath);
 
             Menu menu = new Menu(leasingCompany);
