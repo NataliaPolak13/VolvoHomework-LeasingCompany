@@ -28,10 +28,10 @@ namespace SecondVolvoHomework
 
                 if (firstLine)
                 {
+                    Console.WriteLine("Welcome to the leasing company. ");
                     Console.WriteLine();
                 }
 
-                Console.WriteLine("Welcome to the leasing company. ");
                 Console.WriteLine("1. Display all vehicles");
                 Console.WriteLine("2. Display vehicles of the selected brand");
                 Console.WriteLine("3. Display vehicles exceeding operational tenure");
@@ -58,7 +58,7 @@ namespace SecondVolvoHomework
                     case 2:
                         DisplayAllVehiclesByModel();
                         Console.Write("Enter the brand of the vehicle: ");
-                        string brand = GetStringInput().Replace(" ", "");
+                        string brand = GetStringInput();
                         var vehicleByBrand = vehicleOperations.VehiclesByBrand(brand);
                         if (vehicleByBrand.Any())
                         { 
@@ -80,7 +80,7 @@ namespace SecondVolvoHomework
 
                     case 3:
                         Console.Write("Enter the model of the vehicle: ");
-                        string model = GetStringInput().Replace(" ", "");
+                        string model = GetStringInput();
                         var vehicleByTenure = vehicleOperations.ListVehiclesByModelAndTenure(model);
                         if (vehicleByTenure.Any()) 
                         { 
@@ -125,9 +125,9 @@ namespace SecondVolvoHomework
                     case 6:
                         DisplayAllVehiclesByColorAndBrand();
                         Console.Write("Enter the brand of the vehicle: ");
-                        string brandByComfort = GetStringInput().Replace(" ", "");
+                        string brandByComfort = GetStringInput();
                         Console.Write("Enter the color of the vehicle: ");
-                        string colorByComfort = GetStringInput().Replace(" ", "");
+                        string colorByComfort = GetStringInput();
                         Console.WriteLine();
                         var vehicleByComfort = vehicleOperations.VehiclesSortedByComfortClass(brandByComfort, colorByComfort);
                         if (vehicleByComfort.Any())
