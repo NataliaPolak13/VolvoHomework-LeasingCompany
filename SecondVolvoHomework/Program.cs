@@ -7,12 +7,13 @@ namespace SecondVolvoHomework
     {
         static void Main(string[] args)
         {
-            var leasingCompany = VehicleFleet.LoadFromJsonFile("FleetOfVehicleCompany.json");
+            var jsonIO = new JsonIO();
+            var leasingCompany = jsonIO.LoadFromJson("FleetOfVehicleCompany.json");
 
-            Menu menu = new Menu(leasingCompany);
+            Menu menu = new Menu(leasingCompany, jsonIO);
             menu.RunMenu();
 
-            VehicleFleet.SaveToJsonFile(leasingCompany, "FleetOfVehicleCompany.json");
+            jsonIO.SaveToJson(leasingCompany, "FleetOfVehicleCompany.json");
 
         }
 

@@ -11,11 +11,12 @@ namespace SecondVolvoHomework
     {
 
         private IVehicleOperations vehicleOperations;
+        private IJsonIO jsonIO;
 
-        public Menu(IVehicleOperations vehicleOperations)
+        public Menu(IVehicleOperations vehicleOperations, IJsonIO jsonIO)
         {
             this.vehicleOperations = vehicleOperations;
-
+            this.jsonIO = jsonIO;
         }
         bool firstLine = false;
 
@@ -36,7 +37,8 @@ namespace SecondVolvoHomework
                 Console.WriteLine("4. Calculate total fleet value");
                 Console.WriteLine("5. Display vehicles requiring maintenance");
                 Console.WriteLine("6. Display vehicles sorted by comfort class");
-                Console.WriteLine("7. Exit the program");
+                Console.WriteLine("7. To add new vehicle");
+                Console.WriteLine("8. Exit the program");
 
                 firstLine = true;
 
@@ -55,7 +57,7 @@ namespace SecondVolvoHomework
                     case 2:
                         DisplayAllVehiclesByModel();
                         Console.Write("Enter the brand of the vehicle: ");
-                        string brand = Console.ReadLine().Replace(" ", "");
+                        string brand = GetStringInput().Replace(" ", "");
                         var vehicleByBrand = vehicleOperations.VehiclesByBrand(brand);
                         if (vehicleByBrand.Any())
                         { 
@@ -77,7 +79,7 @@ namespace SecondVolvoHomework
 
                     case 3:
                         Console.Write("Enter the model of the vehicle: ");
-                        string model = Console.ReadLine().Replace(" ", "");
+                        string model = GetStringInput().Replace(" ", "");
                         var vehicleByTenure = vehicleOperations.ListVehiclesByModelAndTenure(model);
                         if (vehicleByTenure.Any()) 
                         { 
@@ -121,10 +123,12 @@ namespace SecondVolvoHomework
                         }
                         break;
                     case 6:
+                        DisplayAllVehiclesByColorAndBrand();
                         Console.Write("Enter the brand of the vehicle: ");
-                        string brandByComfort = Console.ReadLine().Replace(" ", "");
+                        string brandByComfort = GetStringInput().Replace(" ", "");
                         Console.Write("Enter the color of the vehicle: ");
-                        string colorByComfort = Console.ReadLine().Replace(" ", "");
+                        string colorByComfort = GetStringInput().Replace(" ", "");
+                        Console.WriteLine();
                         var vehicleByComfort = vehicleOperations.VehiclesSortedByComfortClass(brandByComfort, colorByComfort);
                         if (vehicleByComfort.Any())
                         {
@@ -143,6 +147,9 @@ namespace SecondVolvoHomework
                         }
                         break;
                     case 7:
+                        AddVehicleFromConsole();
+                        break;
+                    case 8:
                         Environment.Exit(0);
                         break;
                     default:
@@ -151,11 +158,50 @@ namespace SecondVolvoHomework
                 }
             }
         }
+        public void SaveToJsonFile()
+        {
+            if (jsonIO == null)
+            {
+                Console.WriteLine("Cannot save to JSON file.");
+                return;
+            }
+
+            jsonIO.SaveToJson(vehicleOperations as VehicleFleet, "FleetOfVehicleCompany.json");
+        }
+
+        public void LoadFromJsonFile(string filePath)
+        {
+            if (jsonIO == null)
+            {
+                Console.WriteLine("Cannot load from JSON file.");
+                return;
+            }
+
+            var loadedFleet = jsonIO.LoadFromJson(filePath);
+            vehicleOperations = loadedFleet;
+        }
         static double GetNumber()
         {
             if (!double.TryParse(Console.ReadLine(), out double input))
-                Console.WriteLine(new Exception("Your input is not a number. Try again. "));
-            Console.WriteLine();
+                Console.WriteLine(new Exception("Your input is not a right number. Try again. "));
+                Console.WriteLine();
+
+            return input;
+        }
+        static string GetStringInput()
+        {
+            string input;
+            do
+            {
+                input = Console.ReadLine();
+
+                if (string.IsNullOrEmpty(input))
+                {
+                    Console.WriteLine("Input cannot be empty. Try again.");
+                    Console.WriteLine();
+                }
+
+            } while (string.IsNullOrEmpty(input));
 
             return input;
         }
@@ -195,5 +241,98 @@ namespace SecondVolvoHomework
             }
             Console.WriteLine();
         }
+        private void DisplayAllVehiclesByColorAndBrand()
+        {
+            var allVehicles = vehicleOperations.GetAllVehicles();
+
+            if (allVehicles.Any())
+            {
+                Console.WriteLine("Available brands and colors:");
+
+                foreach (var vehicle in allVehicles)
+                {
+                    Console.WriteLine($"{vehicle.Brand}, {vehicle.Color}");
+                }
+            }
+            else
+            {
+                Console.WriteLine("The fleet is empty.");
+            }
+
+            Console.WriteLine();
+        }
+
+
+        private void AddVehicleFromConsole()
+        {
+            Console.Write("Is your car a passenger car? (yes/no): ");
+            string isPassengerVehicle = GetStringInput().ToLower();
+
+            Console.Write("Enter the brand of the vehicle: ");
+            string brand = GetStringInput();
+
+            Console.Write("Enter the model of the vehicle: ");
+            string model = GetStringInput();
+
+            Console.Write("Enter the color of the vehicle: ");
+            string color = GetStringInput();
+
+            Console.Write("Enter the year of manufacture of the vehicle: ");
+            int yearOfManufacture = (int)GetNumber();
+
+            Console.Write("Enter the registration number of the vehicle: ");
+            string registrationNumber = Console.ReadLine();
+
+            Console.Write("Enter the price of the vehicle: ");
+            decimal price = (decimal)GetNumber();
+
+            Vehicle newVehicle;
+
+            if (isPassengerVehicle=="yes")
+            {
+                Console.Write("Enter the travel distance of the passenger vehicle: ");
+                int travelDistance = (int)GetNumber();
+
+                Console.Write("Enter the lessee rating of the passenger vehicle: ");
+                decimal lesseeRating = (decimal)GetNumber();
+
+                Console.Write("Enter the trip duration of the passenger vehicle: ");
+                int tripDuration = (int)GetNumber();
+
+                Console.Write("Enter the model coefficient of the passenger vehicle: ");
+                decimal modelCoefficient = (decimal)GetNumber();
+
+                newVehicle = new PassengerVehicle(color, model, brand, yearOfManufacture, vehicleOperations.GetLastVehicleId() + 1, registrationNumber, price, travelDistance, lesseeRating, tripDuration, modelCoefficient);
+            }
+            else if (isPassengerVehicle=="no") 
+            {
+                Console.Write("Enter the cargo weight of the cargo transport vehicle: ");
+                decimal cargoWeight = (decimal)GetNumber();
+
+                Console.Write("Enter the travel distance of the cargo transport vehicle: ");
+                int travelDistance = (int)GetNumber();
+
+                Console.Write("Enter the model coefficient of the cargo transport vehicle: ");
+                decimal modelCoefficient = (decimal)GetNumber();
+
+                Console.Write("Enter the trip duration of the cargo transport vehicle: ");
+                int tripDuration = (int)GetNumber();
+
+                newVehicle = new CargoTransportVehicle(color, model, brand, yearOfManufacture, vehicleOperations.GetLastVehicleId() + 1, registrationNumber, price, cargoWeight, travelDistance, modelCoefficient, tripDuration);
+            }
+            else
+            {
+                Console.WriteLine("Wrong answear");
+                return;
+            }
+            vehicleOperations.AddVehicle(newVehicle);
+            SaveToJsonFile();
+
+            Console.WriteLine("Vehicle added successfully.");
+            Console.WriteLine();
+
+        }
     }
+
+    
 }

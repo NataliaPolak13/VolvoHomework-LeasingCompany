@@ -15,6 +15,8 @@ namespace SecondVolvoHomework
         List<Vehicle> VehiclesSortedByComfortClass(string chosenBrand, string chosenColor);
         string CalculateComfortClass(Vehicle vehicle);
         List<Vehicle> GetAllVehicles();
+        int GetLastVehicleId();
+        void AddVehicle(Vehicle vehicle);
 
     }
 }
