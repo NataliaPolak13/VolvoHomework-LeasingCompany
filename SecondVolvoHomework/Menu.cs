@@ -28,10 +28,10 @@ namespace SecondVolvoHomework
 
                 if (firstLine)
                 {
-                    Console.WriteLine("Welcome to the leasing company. ");
                     Console.WriteLine();
                 }
 
+                Console.WriteLine("Welcome to the leasing company. ");
                 Console.WriteLine("1. Display all vehicles");
                 Console.WriteLine("2. Display vehicles of the selected brand");
                 Console.WriteLine("3. Display vehicles exceeding operational tenure");
@@ -56,7 +56,7 @@ namespace SecondVolvoHomework
                         break;
 
                     case 2:
-                        DisplayAllVehiclesByModel();
+                        DisplayAllVehiclesByBrand();
                         Console.Write("Enter the brand of the vehicle: ");
                         string brand = GetStringInput();
                         var vehicleByBrand = vehicleOperations.VehiclesByBrand(brand);
@@ -79,11 +79,13 @@ namespace SecondVolvoHomework
                         break;
 
                     case 3:
+                        DisplayAllVehiclesByModel();
                         Console.Write("Enter the model of the vehicle: ");
                         string model = GetStringInput();
                         var vehicleByTenure = vehicleOperations.ListVehiclesByModelAndTenure(model);
                         if (vehicleByTenure.Any()) 
-                        { 
+                        {
+                            Console.WriteLine("These cars of a chosen model exceeded a predetermined operational tenure: ");
                             foreach (var car in vehicleByTenure)
                             {
                                 int i = 1;
@@ -225,7 +227,7 @@ namespace SecondVolvoHomework
             }
             Console.WriteLine();
         }
-        private void DisplayAllVehiclesByModel()
+        private void DisplayAllVehiclesByBrand()
         {
             var allVehicles = vehicleOperations.GetAllVehicles();
             if (allVehicles.Any())
@@ -236,6 +238,25 @@ namespace SecondVolvoHomework
                 foreach (var brand in uniqueModels)
                 {
                     Console.WriteLine(brand);
+                }
+            }
+            else
+            {
+                Console.WriteLine("The fleet is empty.");
+            }
+            Console.WriteLine();
+        }
+        private void DisplayAllVehiclesByModel()
+        {
+            var allVehicles = vehicleOperations.GetAllVehicles();
+            if (allVehicles.Any())
+            {
+                var uniqueModels = allVehicles.Select(vehicle => vehicle.Model).Distinct();
+
+                Console.WriteLine("Choose one of available models: ");
+                foreach (var model in uniqueModels)
+                {
+                    Console.WriteLine(model);
                 }
             }
             else

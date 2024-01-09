@@ -82,9 +82,9 @@ namespace SecondVolvoHomework
             return vehicles.Where(car =>
             {
                 if (car is PassengerVehicle passengerVehicle)
-                    return passengerVehicle.TravelDistance % 5000 <= 1000;
+                    return ((passengerVehicle.TravelDistance) % 5000) >= 4000;
                 else if (car is CargoTransportVehicle cargoVehicle)
-                    return cargoVehicle.TravelDistance % 15000 <= 1000;
+                    return ((cargoVehicle.TravelDistance) % 15000) >= 4000;
 
                 return false;
             }).ToList();
