@@ -31,13 +31,14 @@ namespace SecondVolvoHomework
                     Console.WriteLine();
                 }
 
+                Console.WriteLine("Welcome to the leasing company. ");
                 Console.WriteLine("1. Display all vehicles");
                 Console.WriteLine("2. Display vehicles of the selected brand");
                 Console.WriteLine("3. Display vehicles exceeding operational tenure");
                 Console.WriteLine("4. Calculate total fleet value");
                 Console.WriteLine("5. Display vehicles requiring maintenance");
                 Console.WriteLine("6. Display vehicles sorted by comfort class");
-                Console.WriteLine("7. To add new vehicle");
+                Console.WriteLine("7. Add new vehicle");
                 Console.WriteLine("8. Exit the program");
 
                 firstLine = true;
@@ -111,8 +112,7 @@ namespace SecondVolvoHomework
                             foreach (var car in vehicleRequiringMaintenance)
                             {
                                 int i = 1;
-                                Console.WriteLine($"{i}. {car.Brand} {car.Model}, car id: {car.Id}");
-                                i++;
+                                Console.WriteLine($"car id: {car.Id}, {car.Brand} {car.Model} ");
 
                             }
                         }
@@ -191,17 +191,20 @@ namespace SecondVolvoHomework
         static string GetStringInput()
         {
             string input;
+            bool isValid;
+
             do
             {
-                input = Console.ReadLine();
+                input = Console.ReadLine().Replace(" ", ""); 
+                isValid = !string.IsNullOrEmpty(input) && !input.All(char.IsDigit);
 
-                if (string.IsNullOrEmpty(input))
+                if (!isValid)
                 {
-                    Console.WriteLine("Input cannot be empty. Try again.");
+                    Console.WriteLine("Input must not be empty and cannot be a number. Try again.");
                     Console.WriteLine();
                 }
 
-            } while (string.IsNullOrEmpty(input));
+            } while (!isValid);
 
             return input;
         }
@@ -268,6 +271,13 @@ namespace SecondVolvoHomework
             Console.Write("Is your car a passenger car? (yes/no): ");
             string isPassengerVehicle = GetStringInput().ToLower();
 
+            while (!(isPassengerVehicle == "yes" || isPassengerVehicle == "no"))
+            {
+                Console.WriteLine("Incorrect input. Try again.");
+                Console.Write("Is your car a passenger car? (yes/no): ");
+                isPassengerVehicle = GetStringInput().ToLower();
+            }
+
             Console.Write("Enter the brand of the vehicle: ");
             string brand = GetStringInput();
 
@@ -327,8 +337,6 @@ namespace SecondVolvoHomework
             }
             vehicleOperations.AddVehicle(newVehicle);
             SaveToJsonFile();
-
-            Console.WriteLine("Vehicle added successfully.");
             Console.WriteLine();
 
         }

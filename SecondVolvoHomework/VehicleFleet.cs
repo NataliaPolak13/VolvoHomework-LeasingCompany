@@ -54,6 +54,7 @@ namespace SecondVolvoHomework
             foreach (var vehicle in vehicles)
             {
                 totalValue += CalculateVehicleValue(vehicle);
+                totalValue = Math.Round(totalValue, 2);
             }
 
             return totalValue;
