@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,23 +19,24 @@ namespace SecondVolvoHomework
         }
         bool firstLine = false;
 
+
         public void RunMenu()
         {
             while (true)
             {
-
 
                 if (firstLine)
                 {
                     Console.WriteLine();
                 }
 
-                Console.WriteLine("1. Display vehicles of the selected brand");
-                Console.WriteLine("2. Display vehicles exceeding operational tenure");
-                Console.WriteLine("3. Calculate total fleet value");
-                Console.WriteLine("4. Display vehicles requiring maintenance");
-                Console.WriteLine("5. Display vehicles sorted by comfort class");
-                Console.WriteLine("6. Exit the program");
+                Console.WriteLine("1. Display all vehicles");
+                Console.WriteLine("2. Display vehicles of the selected brand");
+                Console.WriteLine("3. Display vehicles exceeding operational tenure");
+                Console.WriteLine("4. Calculate total fleet value");
+                Console.WriteLine("5. Display vehicles requiring maintenance");
+                Console.WriteLine("6. Display vehicles sorted by comfort class");
+                Console.WriteLine("7. Exit the program");
 
                 firstLine = true;
 
@@ -46,9 +48,14 @@ namespace SecondVolvoHomework
                 switch(option)
                 {
                     case 1:
-                        vehicleOperations.BrandsOfVehicles();
+
+                        DisplayAllVehicles();
+                        break;
+
+                    case 2:
+                        DisplayAllVehiclesByModel();
                         Console.Write("Enter the brand of the vehicle: ");
-                        string brand = Console.ReadLine();
+                        string brand = Console.ReadLine().Replace(" ", "");
                         var vehicleByBrand = vehicleOperations.VehiclesByBrand(brand);
                         if (vehicleByBrand.Any())
                         { 
@@ -68,7 +75,7 @@ namespace SecondVolvoHomework
                         }
                         break;
 
-                    case 2:
+                    case 3:
                         Console.Write("Enter the model of the vehicle: ");
                         string model = Console.ReadLine().Replace(" ", "");
                         var vehicleByTenure = vehicleOperations.ListVehiclesByModelAndTenure(model);
@@ -91,11 +98,11 @@ namespace SecondVolvoHomework
 
                         break;
 
-                    case 3:
+                    case 4:
                         Console.WriteLine(vehicleOperations.CalculateTotalFleetValue());
                     break;
 
-                    case 4:
+                    case 5:
                         var vehicleRequiringMaintenance = vehicleOperations.GetVehiclesRequiringMaintenance();
                         if (vehicleRequiringMaintenance.Any())
                         {
@@ -113,7 +120,7 @@ namespace SecondVolvoHomework
                             Console.WriteLine();
                         }
                         break;
-                    case 5:
+                    case 6:
                         Console.Write("Enter the brand of the vehicle: ");
                         string brandByComfort = Console.ReadLine().Replace(" ", "");
                         Console.Write("Enter the color of the vehicle: ");
@@ -135,7 +142,7 @@ namespace SecondVolvoHomework
                             Console.WriteLine();
                         }
                         break;
-                    case 6:
+                    case 7:
                         Environment.Exit(0);
                         break;
                     default:
@@ -151,6 +158,42 @@ namespace SecondVolvoHomework
             Console.WriteLine();
 
             return input;
+        }
+        private void DisplayAllVehicles()
+        {
+            var allVehicles = vehicleOperations.GetAllVehicles();
+            if (allVehicles.Any())
+            {
+                Console.WriteLine("All vehicles in our fleet:");
+                foreach (var vehicle in allVehicles)
+                {
+                    Console.WriteLine($"Car's id: {vehicle.Id}, brand: {vehicle.Brand}, model: {vehicle.Model} and color: {vehicle.Color}");
+                }
+            }
+            else
+            {
+                Console.WriteLine("The fleet is empty.");
+            }
+            Console.WriteLine();
+        }
+        private void DisplayAllVehiclesByModel()
+        {
+            var allVehicles = vehicleOperations.GetAllVehicles();
+            if (allVehicles.Any())
+            {
+                var uniqueModels = allVehicles.Select(vehicle => vehicle.Brand).Distinct();
+
+                Console.WriteLine("Choose one of available brands: ");
+                foreach (var brand in uniqueModels)
+                {
+                    Console.WriteLine(brand);
+                }
+            }
+            else
+            {
+                Console.WriteLine("The fleet is empty.");
+            }
+            Console.WriteLine();
         }
     }
 }

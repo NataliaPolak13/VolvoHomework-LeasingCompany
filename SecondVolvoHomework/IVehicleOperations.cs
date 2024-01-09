@@ -14,7 +14,7 @@ namespace SecondVolvoHomework
         List<Vehicle> GetVehiclesRequiringMaintenance();
         List<Vehicle> VehiclesSortedByComfortClass(string chosenBrand, string chosenColor);
         string CalculateComfortClass(Vehicle vehicle);
-        List<string> BrandsOfVehicles();
+        List<Vehicle> GetAllVehicles();
 
     }
 }
