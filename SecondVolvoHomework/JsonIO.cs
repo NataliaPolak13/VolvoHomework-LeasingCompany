@@ -30,24 +30,17 @@ namespace SecondVolvoHomework
         {
             try
             {
-                if (File.Exists(filePath))
-                {
-                    string json = File.ReadAllText(filePath);
-                    var loadedFleet = JsonConvert.DeserializeObject<VehicleFleet>(json, jsonSerializerSettings);
-                    if (loadedFleet != null)
-                    {
-                        return loadedFleet;
-                    }
-                    else
-                    {
-                        return new VehicleFleet();
-                    }
-                }
-                else
+                if (!File.Exists(filePath))
                 {
                     Console.WriteLine("File does not exist. Creating a new fleet.");
                     return new VehicleFleet();
                 }
+
+                string json = File.ReadAllText(filePath);
+                var loadedFleet = JsonConvert.DeserializeObject<VehicleFleet>(json, jsonSerializerSettings);
+                loadedFleet ??= new VehicleFleet();
+                return loadedFleet;
+                
             }
             catch (Exception ex)
             {

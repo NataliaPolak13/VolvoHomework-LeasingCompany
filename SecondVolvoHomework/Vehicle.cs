@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SecondVolvoHomework
 {
-    public class Vehicle
+    public abstract class Vehicle
     {
         public string Color { get; private set; }
         public string Model { get; private set; }
@@ -27,6 +27,8 @@ namespace SecondVolvoHomework
             RegistrationNumber = registrationNumber;
             Price = price;
         }
+
+        public abstract decimal GetVehicleMonetaryValue();
 
     }
 }

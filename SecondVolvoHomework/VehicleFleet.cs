@@ -49,31 +49,15 @@ namespace SecondVolvoHomework
 
         public decimal CalculateTotalFleetValue()
         {
-            decimal totalValue = 0;
-
-            foreach (var vehicle in vehicles)
-            {
-                totalValue += CalculateVehicleValue(vehicle);
-                totalValue = Math.Round(totalValue, 2);
-            }
-
+            decimal totalValue = Math.Round(vehicles.Select(CalculateVehicleValue).Sum(), 2);
             return totalValue;
+
         }
 
         private decimal CalculateVehicleValue(Vehicle vehicle)
         {
             int yearsOfExploitation = DateTime.Now.Year - vehicle.YearOfManufacture;
-
-            if (vehicle is PassengerVehicle passengerVehicle)
-            {
-                decimal lossRate = 0.10m;
-                return vehicle.Price * (decimal)Math.Pow((double)(1 - lossRate), yearsOfExploitation);
-            }
-            else
-            {
-                decimal lossRate = 0.07m;
-                return vehicle.Price * (decimal)Math.Pow((double)(1 - lossRate), yearsOfExploitation);
-            }
+            return vehicle.GetVehicleMonetaryValue();
 
         }
 
@@ -95,40 +79,20 @@ namespace SecondVolvoHomework
 
             if (vehicle is PassengerVehicle passengerVehicle)
             {
-
-                if (yearsOfExploitation <= 3 || passengerVehicle.TravelDistance < 10000)
-                {
-                    return "Premium";
-                }
-                else if (yearsOfExploitation <= 7 || passengerVehicle.TravelDistance < 50000)
-                {
-                    return "Standard";
-                }
-                else
-                {
-                    return "Economy";
-                }
-
+                return (yearsOfExploitation <= 3 || passengerVehicle.TravelDistance < 10000) ? "Premium" :
+                       (yearsOfExploitation <= 7 || passengerVehicle.TravelDistance < 50000) ? "Standard" :
+                       "Economy";
             }
             else if (vehicle is CargoTransportVehicle cargoTransportVehicle)
             {
-                if (yearsOfExploitation <= 3 || cargoTransportVehicle.TravelDistance < 20000)
-                {
-                    return "Premium";
-                }
-                else if (yearsOfExploitation <= 7 || (cargoTransportVehicle.TravelDistance >= 20000 && cargoTransportVehicle.TravelDistance < 70000))
-                {
-                    return "Standard";
-                }
-                else
-                {
-                    return "Economy";
-                }
+                return (yearsOfExploitation <= 3 || cargoTransportVehicle.TravelDistance < 20000) ? "Premium" :
+                       (yearsOfExploitation <= 7 || (cargoTransportVehicle.TravelDistance >= 20000 && cargoTransportVehicle.TravelDistance < 70000)) ? "Standard" :
+                       "Economy";
             }
             else
+            {
                 return "Unknown";
-
-
+            }
         }
         public List<Vehicle> VehiclesSortedByComfortClass(string chosenBrand, string chosenColor)
         {

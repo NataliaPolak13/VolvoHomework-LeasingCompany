@@ -23,5 +23,12 @@ namespace SecondVolvoHomework
             ModelCoefficient = modelCoefficient;
         }
 
+        public override decimal GetVehicleMonetaryValue()
+        {
+            int yearsOfExploitation = DateTime.Now.Year - YearOfManufacture;
+            decimal lossRate = 0.10m;
+            return Price * (decimal)Math.Pow((double)(1 - lossRate), yearsOfExploitation);
+
+        }
     }
 }

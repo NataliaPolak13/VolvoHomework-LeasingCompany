@@ -19,147 +19,96 @@ namespace SecondVolvoHomework
             this.jsonIO = jsonIO;
         }
         bool firstLine = false;
-
-
         public void RunMenu()
         {
-            while (true)
-            {
+             var menuItems = new (string text, Action action)[]
+             {
+                 ("Display all vehicles", () => DisplayVehicles()),
+                 ("Display vehicles of the selected brand", () => DisplaySelectedVehicles()),
+                 ("Display vehicles exceeding operational tenure", () =>
+                 {
+                     DisplayAllVehiclesByModel();
+                     Console.Write("Enter the model of the vehicle: ");
+                     string model = GetStringInput();
+                     var vehicleByTenure = vehicleOperations.ListVehiclesByModelAndTenure(model);
+                     Console.WriteLine(vehicleByTenure.Any()
+                         ? $"These cars of a chosen model exceeded a predetermined operational tenure: \n{string.Join(Environment.NewLine, vehicleByTenure.Select((car, i) => $"{i + 1}. {car.Brand} {car.Model}, car id: {car.Id}"))}"
+                         : $"Each car of {model.ToLower()} model are able to use\n");
+                 }),
+                 ("Calculate total fleet value", () => Console.WriteLine(vehicleOperations.CalculateTotalFleetValue())),
+                 ("Display vehicles requiring maintenance", () =>
+                 {
+                     var vehicleRequiringMaintenance = vehicleOperations.GetVehiclesRequiringMaintenance();
+                     Console.WriteLine(vehicleRequiringMaintenance.Any()
+                         ? string.Join(Environment.NewLine, vehicleRequiringMaintenance.Select((car, i) => 
+                         $"car id: {car.Id}, {car.Brand} {car.Model}"))
+                         : "All cars require no maintenance");
+                     Console.WriteLine();
+                 }),
+                 ("Display vehicles sorted by comfort class", () =>
+                 {
+                     DisplayAllVehiclesByColorAndBrand();
+                     Console.Write("Enter the brand of the vehicle: ");
+                     string brandByComfort = GetStringInput();
+                     Console.Write("Enter the color of the vehicle: ");
+                     string colorByComfort = GetStringInput();
+                     Console.WriteLine();
+                     var vehicleByComfort = vehicleOperations.VehiclesSortedByComfortClass(brandByComfort, colorByComfort);
+                     Console.WriteLine(vehicleByComfort.Any()
+                         ? $"Our company has vehicles of {brandByComfort.ToLower()} with color {colorByComfort.ToLower()}: " +
+                         $"\n{string.Join(Environment.NewLine, vehicleByComfort.Select((car, i) => 
+                         $"{i + 1}. {car.Brand} {car.Color} and it's comfort class: {vehicleOperations.CalculateComfortClass(car)}"))}"
+                         : $"Our company does not have these vehicles.\n");
+                 }),
+                 ("Add new vehicle", () => AddVehicleFromConsole()),
+                 ("Exit the program", () => Environment.Exit(0)),
 
-                if (firstLine)
-                {
-                    Console.WriteLine();
-                }
+             };
 
-                Console.WriteLine("Welcome to the leasing company. ");
-                Console.WriteLine("1. Display all vehicles");
-                Console.WriteLine("2. Display vehicles of the selected brand");
-                Console.WriteLine("3. Display vehicles exceeding operational tenure");
-                Console.WriteLine("4. Calculate total fleet value");
-                Console.WriteLine("5. Display vehicles requiring maintenance");
-                Console.WriteLine("6. Display vehicles sorted by comfort class");
-                Console.WriteLine("7. Add new vehicle");
-                Console.WriteLine("8. Exit the program");
+             while (true)
+             {
 
-                firstLine = true;
+                 if (firstLine)
+                 {
+                     Console.WriteLine();
+                 }
+
+                 Console.WriteLine("Welcome to the leasing company. ");
+
+                 foreach (var (text, _, index) in menuItems.Select((x, i) => (x.text, x.action, i)))
+                 {
+                     Console.WriteLine($"{index + 1}. {text}");
+                 }
+
+                 firstLine = true;
 
                 Console.Write("Choose an option: ");
-                var option = GetNumber();
+                var option = (int)GetNumber();
+                if (option < 1 || option > menuItems.Length)
+                 {
+                     Console.WriteLine("Invalid option. Please try again.");
+                     continue;
+                 }
 
-
-
-                switch(option)
-                {
-                    case 1:
-
-                        DisplayAllVehicles();
-                        break;
-
-                    case 2:
-                        DisplayAllVehiclesByBrand();
-                        Console.Write("Enter the brand of the vehicle: ");
-                        string brand = GetStringInput();
-                        var vehicleByBrand = vehicleOperations.VehiclesByBrand(brand);
-                        if (vehicleByBrand.Any())
-                        { 
-                            Console.WriteLine($"Our company has vehicles of {brand.ToLower()}: ");
-                            foreach(var car in vehicleByBrand)
-                            {
-                                int i = 1;
-                                Console.WriteLine($"{i}. {car.Brand} {car.Model} - {car.Color}");
-                                i++;
-
-                            }
-                        }
-                        else
-                        {
-                            Console.WriteLine($"Our company does not have vehicles of {brand.ToLower()}.");
-                            Console.WriteLine();
-                        }
-                        break;
-
-                    case 3:
-                        DisplayAllVehiclesByModel();
-                        Console.Write("Enter the model of the vehicle: ");
-                        string model = GetStringInput();
-                        var vehicleByTenure = vehicleOperations.ListVehiclesByModelAndTenure(model);
-                        if (vehicleByTenure.Any()) 
-                        {
-                            Console.WriteLine("These cars of a chosen model exceeded a predetermined operational tenure: ");
-                            foreach (var car in vehicleByTenure)
-                            {
-                                int i = 1;
-                                Console.WriteLine($"{i}. {car.Brand} {car.Model}, car id: {car.Id}");
-                                i++;
-
-                            }
-                        }
-                        else
-                        {
-                            Console.WriteLine($"Each car of {model.ToLower()} model are able to use");
-                            Console.WriteLine();
-                        }
-
-
-                        break;
-
-                    case 4:
-                        Console.WriteLine(vehicleOperations.CalculateTotalFleetValue());
-                    break;
-
-                    case 5:
-                        var vehicleRequiringMaintenance = vehicleOperations.GetVehiclesRequiringMaintenance();
-                        if (vehicleRequiringMaintenance.Any())
-                        {
-                            foreach (var car in vehicleRequiringMaintenance)
-                            {
-                                int i = 1;
-                                Console.WriteLine($"car id: {car.Id}, {car.Brand} {car.Model} ");
-
-                            }
-                        }
-                        else
-                        {
-                            Console.WriteLine($"All cars require no maintenance");
-                            Console.WriteLine();
-                        }
-                        break;
-                    case 6:
-                        DisplayAllVehiclesByColorAndBrand();
-                        Console.Write("Enter the brand of the vehicle: ");
-                        string brandByComfort = GetStringInput();
-                        Console.Write("Enter the color of the vehicle: ");
-                        string colorByComfort = GetStringInput();
-                        Console.WriteLine();
-                        var vehicleByComfort = vehicleOperations.VehiclesSortedByComfortClass(brandByComfort, colorByComfort);
-                        if (vehicleByComfort.Any())
-                        {
-                            Console.WriteLine($"Our company has vehicles of {brandByComfort.ToLower()} with color {colorByComfort.ToLower()}: ");
-                            int i = 1;
-                            foreach (var car in vehicleByComfort)
-                            {
-                                Console.WriteLine($"{i}. {car.Brand} {car.Color} and it's comfort class: {vehicleOperations.CalculateComfortClass(car)}");
-                                i++;
-                            }
-                        }
-                        else
-                        {
-                            Console.WriteLine($"Our company does not have these vehicles.");
-                            Console.WriteLine();
-                        }
-                        break;
-                    case 7:
-                        AddVehicleFromConsole();
-                        break;
-                    case 8:
-                        Environment.Exit(0);
-                        break;
-                    default:
-                        Console.WriteLine("Incorrect output. Try again.");
-                        break;
-                }
-            }
+                 menuItems[option - 1].action();
+             }
         }
+
+        private void DisplaySelectedVehicles()
+        {
+            DisplayAllVehiclesByBrand();
+            Console.Write("Enter the brand of the vehicle: ");
+            string brand = GetStringInput();
+            var vehicleByBrand = vehicleOperations.VehiclesByBrand(brand);
+
+            Console.WriteLine(vehicleByBrand.Any()
+                ? $"Our company has vehicles of {brand.ToLower()}: " +
+                $"\n{string.Join("\n", vehicleByBrand.Select((car, i) => 
+                $"{i + 1}. {car.Brand} {car.Model} - {car.Color}"))}"
+                : $"Our company does not have vehicles of {brand.ToLower()}.\n");
+
+        }
+
         public void SaveToJsonFile()
         {
             if (jsonIO == null)
@@ -210,15 +159,22 @@ namespace SecondVolvoHomework
 
             return input;
         }
-        private void DisplayAllVehicles()
+        private void DisplayVehicles(
+            Func<Vehicle, bool> filter = null,
+            Func<Vehicle, string> displayTemplate = null)
         {
+            filter ??= (_) => true;
+            displayTemplate ??= (vehicle) => $"Car's id: {vehicle.Id}, brand: {vehicle.Brand}, model: {vehicle.Model} and color: {vehicle.Color}";
+
             var allVehicles = vehicleOperations.GetAllVehicles();
             if (allVehicles.Any())
             {
                 Console.WriteLine("All vehicles in our fleet:");
-                foreach (var vehicle in allVehicles)
+                var vehiclesPassingFilter = allVehicles.Select(filter);
+                foreach (var displayValue in allVehicles.Select(displayTemplate).Distinct())
                 {
-                    Console.WriteLine($"Car's id: {vehicle.Id}, brand: {vehicle.Brand}, model: {vehicle.Model} and color: {vehicle.Color}");
+                    //Console.WriteLine($"Car's id: {vehicle.Id}, brand: {vehicle.Brand}, model: {vehicle.Model} and color: {vehicle.Color}");
+                    Console.WriteLine(displayValue);
                 }
             }
             else
@@ -227,43 +183,16 @@ namespace SecondVolvoHomework
             }
             Console.WriteLine();
         }
-        private void DisplayAllVehiclesByBrand()
-        {
-            var allVehicles = vehicleOperations.GetAllVehicles();
-            if (allVehicles.Any())
-            {
-                var uniqueModels = allVehicles.Select(vehicle => vehicle.Brand).Distinct();
-
-                Console.WriteLine("Choose one of available brands: ");
-                foreach (var brand in uniqueModels)
-                {
-                    Console.WriteLine(brand);
-                }
-            }
-            else
-            {
-                Console.WriteLine("The fleet is empty.");
-            }
-            Console.WriteLine();
-        }
+        private void DisplayAllVehiclesByBrand() => DisplayVehicles(displayTemplate: (v) => v.Brand.ToString());
         private void DisplayAllVehiclesByModel()
         {
             var allVehicles = vehicleOperations.GetAllVehicles();
-            if (allVehicles.Any())
-            {
-                var uniqueModels = allVehicles.Select(vehicle => vehicle.Model).Distinct();
 
-                Console.WriteLine("Choose one of available models: ");
-                foreach (var model in uniqueModels)
-                {
-                    Console.WriteLine(model);
-                }
-            }
-            else
-            {
-                Console.WriteLine("The fleet is empty.");
-            }
-            Console.WriteLine();
+            Console.WriteLine(allVehicles.Any()
+                ? "Choose one of available models: \n" + 
+                string.Join("\n", allVehicles.Select(vehicle => vehicle.Model).Distinct())
+                : "The fleet is empty.\n");
+
         }
         private void DisplayAllVehiclesByColorAndBrand()
         {
