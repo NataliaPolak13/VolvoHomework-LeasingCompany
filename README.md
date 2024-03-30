@@ -34,4 +34,6 @@ This project is a simulation of a leasing company's vehicle fleet management sys
 
 Enjoy managing your leasing company's vehicle fleet with ease and efficiency!
 
+Author Natalia Polak
+
 
